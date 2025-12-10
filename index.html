@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Numérica</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>CALCULADORA NUMÉRICA</h1>
+    </header>
+    
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('newton')" data-icon="📊">NEWTON</button>
+      <button class="tab" onclick="showTab('lagrange')" data-icon="🔗">LAGRANGE</button>
+      <button class="tab" onclick="showTab('minimos')" data-icon="📈">MÍNIMOS CUADRADOS</button>
+      <button class="tab" onclick="showTab('trapecio')" data-icon="📐">TRAPECIO</button>
+      <button class="tab" onclick="showTab('simpson')" data-icon="📊">SIMPSON</button>
+      <button class="tab" onclick="showTab('euler')" data-icon="🎯">EULER</button>
+      <button class="tab" onclick="showTab('taylor')" data-icon="📐">TAYLOR</button>
+      <button class="tab" onclick="showTab('rungekutta')" data-icon="🚀">RUNGE-KUTTA</button>
+    </div>
+
+    <div class="container">
+      <div id="loading" class="loading">
+        <div class="loader"></div>
+        <div class="loading-text">Cargando Python...</div>
+      </div>
+
+      <!-- NEWTON -->
+      <div id="newton" class="section">
+        <div class="content-grid">
+          <!-- Columna Izquierda: Gráfica -->
+          <div class="graph-column">
+            <div id="graph_newton" class="graph-container"></div>
+          </div>
+
+          <!-- Columna Derecha: Inputs y Resultados -->
+          <div class="controls-column">
+            <div class="ecuaciones-box">
+              <h3>ECUACIONES</h3>
+              <div class="input-group">
+                <label>Puntos X</label>
+                <input type="text" id="new_x" value="1, 0, -3" placeholder="Ej: 1, 0, -3">
+              </div>
+              <div class="input-group">
+                <label>Puntos Y</label>
+                <input type="text" id="new_y" value="2, 4, -2" placeholder="Ej: 2, 4, -2">
+              </div>
+              <div class="input-group">
+                <label>Evaluar en X</label>
+                <input type="number" id="new_eval" value="3" step="any">
+              </div>
+              <button class="btn-calcular" onclick="runNewton()">CALCULAR</button>
+            </div>
+
+            <div class="resultados-box">
+              <h3>RESULTADOS</h3>
+              <div id="out_newton" class="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAGRANGE -->
+      <div id="lagrange" class="section">
+        <div class="content-grid">
+          <!-- Columna Izquierda: Gráfica -->
+          <div class="graph-column">
+            <div id="graph_lagrange" class="graph-container"></div>
+          </div>
+
+          <!-- Columna Derecha: Inputs y Resultados -->
+          <div class="controls-column">
+            <div class="ecuaciones-box">
+              <h3>ECUACIONES</h3>
+              <div class="input-group">
+                <label>Puntos X</label>
+                <input type="text" id="lag_x" value="0, 2, 4" placeholder="Ej: 0, 2, 4">
+              </div>
+              <div class="input-group">
+                <label>Puntos Y</label>
+                <input type="text" id="lag_y" value="2, 6, 20" placeholder="Ej: 2, 6, 20">
+              </div>
+              <div class="input-group">
+                <label>Evaluar en X</label>
+                <input type="number" id="lag_eval" value="3" step="any">
+              </div>
+              <button class="btn-calcular" onclick="runLagrange()">CALCULAR</button>
+            </div>
+
+            <div class="resultados-box">
+              <h3>RESULTADOS</h3>
+              <div id="out_lagrange" class="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MINIMOS CUADRADOS -->
+      <div id="minimos" class="section">
+        <div class="content-grid">
+          <!-- Columna Izquierda: Gráfica -->
+          <div class="graph-column">
+            <div id="graph_minimos" class="graph-container"></div>
+          </div>
+
+          <!-- Columna Derecha: Inputs y Resultados -->
+          <div class="controls-column">
+            <div class="ecuaciones-box">
+              <h3>ECUACIONES</h3>
+              <div class="input-group">
+                <label>Puntos X</label>
+                <input type="text" id="min_x" value="10, 20, 30, 40" placeholder="Ej: 10, 20, 30, 40">
+              </div>
+              <div class="input-group">
+                <label>Puntos Y</label>
+                <input type="text" id="min_y" value="6, 25, 60, 110" placeholder="Ej: 6, 25, 60, 110">
+              </div>
+              <div class="input-group">
+                <label>Grado (1 o 2)</label>
+                <input type="number" id="min_grado" value="2" min="1" max="2">
+              </div>
+              <div class="input-group">
+                <label>Evaluar en X</label>
+                <input type="number" id="min_eval" value="25" step="any">
+              </div>
+              <button class="btn-calcular" onclick="runMinimos()">CALCULAR</button>
+            </div>
+
+            <div class="resultados-box">
+              <h3>RESULTADOS</h3>
+              <div id="out_minimos" class="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRAPECIO -->
+      <div id="trapecio" class="section">
+        <div class="content-grid">
+          <!-- Columna Izquierda: Gráfica -->
+          <div class="graph-column">
+            <div id="graph_trapecio" class="graph-container"></div>
+          </div>
+
+          <!-- Columna Derecha: Inputs y Resultados -->
+          <div class="controls-column">
+            <div class="ecuaciones-box">
+              <h3>ECUACIONES</h3>
+              <div class="input-group">
+                <label>Límite inferior (a)</label>
+                <input type="number" id="trap_a" value="0" step="any">
+              </div>
+              <div class="input-group">
+                <label>Límite superior (b)</label>
+                <input type="number" id="trap_b" value="2" step="any">
+              </div>
+              <div class="input-group">
+                <label>Número de subintervalos (n)</label>
+                <input type="number" id="trap_n" value="100" min="1">
+              </div>
+              <div class="input-group">
+                <label>Función f(x)</label>
+                <input type="text" id="trap_func" value="x**2" placeholder="Ej: x**2">
+              </div>
+              <button class="btn-calcular" onclick="runTrapecio()">CALCULAR</button>
+            </div>
+
+            <div class="resultados-box">
+              <h3>RESULTADOS</h3>
+              <div id="out_trapecio" class="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIMPSON -->
+      <div id="simpson" class="section">
+        <div class="content-grid">
+          <!-- Columna Izquierda: Gráfica -->
+          <div class="graph-column">
+            <div id="graph_simpson" class="graph-container"></div>
+          </div>
+
+          <!-- Columna Derecha: Inputs y Resultados -->
+          <div class="controls-column">
+            <div class="ecuaciones-box">
+              <h3>ECUACIONES</h3>
+              <div class="input-group">
+                <label>Límite inferior (a)</label>
+                <input type="number" id="simp_a" value="2" step="any">
+              </div>
+              <div class="input-group">
+                <label>Límite superior (b)</label>
+                <input type="number" id="simp_b" value="5" step="any">
+              </div>
+              <div class="input-group">
+                <label>Número de subintervalos (n, debe ser par)</label>
+                <input type="number" id="simp_n" value="6" min="2" step="2">
+              </div>
+              <div class="input-group">
+                <label>Función f(x)</label>
+                <input type="text" id="simp_func" value="x**3 / (1.0 + x**0.5)" placeholder="Ej: x**3 / (1.0 + x**0.5)">
+              </div>
+              <button class="btn-calcular" onclick="runSimpson()">CALCULAR</button>
+            </div>
+
+            <div class="resultados-box">
+              <h3>RESULTADOS</h3>
+              <div id="out_simpson" class="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EULER -->
+      <div id="euler" class="section">
+        <div class="content-grid">
+          <div class="graph-column">
+            <div id="graph_euler" class="graph-container"></div>
+          </div>
+
+          <div class="controls-column">
+            <div class="ecuaciones-box">
+              <h3>ECUACIONES</h3>
+              <div class="input-group">
+                <label>Función f(x,y)</label>
+                <input type="text" id="euler_func" value="y" placeholder="Ej: y">
+              </div>
+              <div class="input-group">
+                <label>x0 inicial</label>
+                <input type="number" id="euler_x0" value="0" step="any">
+              </div>
+              <div class="input-group">
+                <label>y0 inicial</label>
+                <input type="number" id="euler_y0" value="1" step="any">
+              </div>
+              <div class="input-group">
+                <label>Paso h</label>
+                <input type="number" id="euler_h" value="0.1" step="any">
+              </div>
+              <div class="input-group">
+                <label>Número de pasos</label>
+                <input type="number" id="euler_steps" value="2" min="1">
+              </div>
+              <button class="btn-calcular" onclick="runEuler()">CALCULAR</button>
+            </div>
+
+            <div class="resultados-box">
+              <h3>RESULTADOS</h3>
+              <div id="out_euler" class="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAYLOR -->
+      <div id="taylor" class="section">
+        <div class="content-grid">
+          <div class="graph-column">
+            <div id="graph_taylor" class="graph-container"></div>
+          </div>
+
+          <div class="controls-column">
+            <div class="ecuaciones-box">
+              <h3>ECUACIONES</h3>
+              <div class="input-group">
+                <label>Función y' = f(x,y)</label>
+                <input type="text" id="taylor_func" value="y" placeholder="Ej: y">
+              </div>
+              <div class="input-group">
+                <label>Función y'' (segunda derivada)</label>
+                <input type="text" id="taylor_ypp" value="y" placeholder="Ej: y">
+              </div>
+              <div class="input-group">
+                <label>x0 inicial</label>
+                <input type="number" id="taylor_x0" value="0" step="any">
+              </div>
+              <div class="input-group">
+                <label>y0 inicial</label>
+                <input type="number" id="taylor_y0" value="1" step="any">
+              </div>
+              <div class="input-group">
+                <label>Paso h</label>
+                <input type="number" id="taylor_h" value="0.1" step="any">
+              </div>
+              <div class="input-group">
+                <label>Número de pasos</label>
+                <input type="number" id="taylor_steps" value="2" min="1">
+              </div>
+              <button class="btn-calcular" onclick="runTaylor()">CALCULAR</button>
+            </div>
+
+            <div class="resultados-box">
+              <h3>RESULTADOS</h3>
+              <div id="out_taylor" class="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RUNGE-KUTTA -->
+      <div id="rungekutta" class="section">
+        <div class="content-grid">
+          <div class="graph-column">
+            <div id="graph_rk" class="graph-container"></div>
+          </div>
+
+          <div class="controls-column">
+            <div class="ecuaciones-box">
+              <h3>ECUACIONES</h3>
+              <div class="input-group">
+                <label>Función f(x,y)</label>
+                <input type="text" id="rk_func" value="x*y + x**3" placeholder="Ej: x*y + x**3">
+              </div>
+              <div class="input-group">
+                <label>x0 inicial</label>
+                <input type="number" id="rk_x0" value="0" step="any">
+              </div>
+              <div class="input-group">
+                <label>y0 inicial</label>
+                <input type="number" id="rk_y0" value="0" step="any">
+              </div>
+              <div class="input-group">
+                <label>Paso h</label>
+                <input type="number" id="rk_h" value="0.1" step="any">
+              </div>
+              <button class="btn-calcular" onclick="runRungeKutta()">CALCULAR</button>
+            </div>
+
+            <div class="resultados-box">
+              <h3>RESULTADOS</h3>
+              <div id="out_rk" class="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
